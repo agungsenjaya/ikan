@@ -39,8 +39,9 @@ class ConfirmationResource extends Resource
     public static function table(Table $table): Table
     {
         // $a = $this->record->invoice->status;
-        return $table
-            ->columns([
+        $a = null;
+        if (auth()->id() == 1) {
+            $a = [
                 ImageColumn::make('img')->simpleLightbox(),
                 Tables\Columns\TextColumn::make('invoice.user.name')->label('User')->searchable(),
                 Tables\Columns\TextColumn::make('invoice.code')->label('Invoice Code')->searchable(),
@@ -69,8 +70,22 @@ class ConfirmationResource extends Resource
                 ->send(); 
             }
     })
-                ),
-            ])
+),
+];
+        }else{
+
+            $a = [
+                ImageColumn::make('img')->simpleLightbox(),
+                Tables\Columns\TextColumn::make('invoice.user.name')->label('User')->searchable(),
+                Tables\Columns\TextColumn::make('invoice.code')->label('Invoice Code')->searchable(),
+                Tables\Columns\TextColumn::make('created_at')->label('Confirm Date'),
+                Tables\Columns\TextColumn::make('invoice.payment.title')->label('Payment'),
+                Tables\Columns\TextColumn::make('invoice.total')->formatStateUsing(fn (string $state): string => __(rupiah("{$state}")))->label('Total'),
+];
+
+        }
+        return $table
+            ->columns($a)
             ->filters([
                 //
             ])
