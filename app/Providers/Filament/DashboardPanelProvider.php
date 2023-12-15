@@ -19,6 +19,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Chiiya\FilamentAccessControl\FilamentAccessControlPlugin;
 use App\Filament\Widgets\ProductWidget;
+use SolutionForest\FilamentSimpleLightBox\SimpleLightBoxPlugin;
 
 
 class DashboardPanelProvider extends PanelProvider
@@ -31,7 +32,8 @@ class DashboardPanelProvider extends PanelProvider
             ->path('dashboard')
             ->login()
             ->plugins([
-                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+                SimpleLightBoxPlugin::make()
             ])
             ->colors([
                 'primary' => Color::Amber,
@@ -43,8 +45,8 @@ class DashboardPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                // Widgets\AccountWidget::class,
+                // Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

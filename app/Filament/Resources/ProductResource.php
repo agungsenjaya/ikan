@@ -18,10 +18,12 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\MorphToSelect;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Set;
 use Illuminate\Support\Str;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Filters\Filter;
 
 
 
@@ -36,6 +38,7 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
+                Section::make() ->schema([
                 // TextInput::make('title')->unique(table: Product::class)->live()->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state)))->required(),
                 TextInput::make('title')->live()->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state)))->required(),
                 Select::make('category_id')->relationship(name: 'category', titleAttribute: 'title')->required()->preload(),
@@ -44,6 +47,7 @@ class ProductResource extends Resource
                 Textarea::make('description')->required()->columnSpanFull(),
                 FileUpload::make('img')->required()->columnSpanFull(),    
                 Hidden::make('slug')
+            ])
             ]);
     }
 
@@ -51,13 +55,13 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('img'),
+                ImageColumn::make('img')->simpleLightbox(),
                 Tables\Columns\TextColumn::make('title')->searchable(),
                 Tables\Columns\TextColumn::make('category.title')->badge()
                 ->color(fn (string $state): string => match ($state) {
                     'ikan tawar' => 'warning',
                     'ikan laut' => 'success',
-                }),
+                })->sortable(),
                 Tables\Columns\TextColumn::make('unit.symbol'),
                 Tables\Columns\TextColumn::make('stock')->state(function ($record){
                     $a = 0;
@@ -79,7 +83,7 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('price')->formatStateUsing(fn (string $state): string => __(rupiah("{$state}"))),
             ])
             ->filters([
-                //
+                // Filter::make('category_id')
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

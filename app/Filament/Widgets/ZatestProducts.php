@@ -26,7 +26,7 @@ class ZatestProducts extends BaseWidget
     protected function getTableColumns(): array
     {
                 return [
-                    ImageColumn::make('img'),
+                    ImageColumn::make('img')->simpleLightbox(),
             Tables\Columns\TextColumn::make('title')->searchable(),
             Tables\Columns\TextColumn::make('category.title')->badge()
             ->color(fn (string $state): string => match ($state) {
@@ -57,10 +57,14 @@ class ZatestProducts extends BaseWidget
 
     protected function getTableActions() :array
     {
-        return [
-                    Action::make('buy')
-    ->url(fn (Product $record): string => route('filament.dashboard.resources.products.buy', $record))
-    
-        ];
+        if (auth()->id() == 2) {
+            return [
+                Action::make('buy')
+->url(fn (Product $record): string => route('filament.dashboard.resources.products.buy', $record))
+
+    ];
+        }else{
+            return [];
+        }
     }
 }

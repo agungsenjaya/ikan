@@ -14,11 +14,16 @@ class DashboardWidget extends BaseWidget
     {
         $a = Product::count();
         $b = Invoice::count();
-        $c = Invoice::where('status','paid')->count();
-        return [
-            Stat::make('Total Product', $a),
-            Stat::make('Total Invoice', $b),
-            Stat::make('Invoice Paid', $c),
-        ];
+        $c = Confirmation::count();
+        if (auth()->id() == 1) {
+            # code...
+            return [
+                Stat::make('Total Product', $a),
+                Stat::make('Total Invoice', $b),
+                Stat::make('Total Confirmation', $c),
+            ];
+        }else{
+            return [];
+        }
     }
 }

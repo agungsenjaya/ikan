@@ -18,6 +18,9 @@ use Filament\Forms\Components\Select;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\Action;
 use Illuminate\Contracts\View\View;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+
 
 class ConfirmationResource extends Resource
 {
@@ -29,7 +32,7 @@ class ConfirmationResource extends Resource
     {
         return $form
             ->schema([
-                //
+                // 
             ]);
     }
 
@@ -38,29 +41,34 @@ class ConfirmationResource extends Resource
         // $a = $this->record->invoice->status;
         return $table
             ->columns([
-                ImageColumn::make('img'),
+                ImageColumn::make('img')->simpleLightbox(),
                 Tables\Columns\TextColumn::make('invoice.user.name')->label('User')->searchable(),
                 Tables\Columns\TextColumn::make('invoice.code')->label('Invoice Code')->searchable(),
                 Tables\Columns\TextColumn::make('created_at')->label('Confirm Date'),
                 Tables\Columns\TextColumn::make('invoice.payment.title')->label('Payment'),
                 Tables\Columns\TextColumn::make('invoice.total')->formatStateUsing(fn (string $state): string => __(rupiah("{$state}")))->label('Total'),
-                Tables\Columns\TextColumn::make('invoice.status')->label('Action')->action(Action::make('Update Invoice')->fillForm(fn (Confirmation $record): array => [
-                    'status' => $record->invoice->status,
-                ])->form([
-                    Select::make('status')->label('Status')->options([
+                Tables\Columns\TextColumn::make('invoice.status')->label('Action')->action(
+                    Action::make('updateConfirmation')
+    ->fillForm(fn (Confirmation $record): array => [
+            'status' => $record->invoice->status,
+        ])->form([
+            Select::make('status')->label('Status')->options([
                         'paid' => 'paid',
                         'unpaid' => 'unpaid',
                         'reject' => 'reject',
                     ])->required(),
-                ])
-                ->action(function ($record,$data) {
-                    $a = Invoice::find($record->invoice_id);
-                    $a->status = $data['status'];
-                    $a->save();
-                    // $record->author()->associate($data['status']);
-                })->modalContent(fn (Confirmation $record): View => view(
-                    'img',['record' => $record],
-                ))
+    ])
+    ->action(function (array $data, Confirmation $record): void {
+            $a = Invoice::find($record->invoice_id);
+            $a->status = $data['status'];
+            $a->save();
+            if ($a) {
+                Notification::make()
+                ->title('Confirmation success')
+                ->success()
+                ->send(); 
+            }
+    })
                 ),
             ])
             ->filters([
@@ -88,8 +96,8 @@ class ConfirmationResource extends Resource
         return [
             'index' => Pages\ListConfirmations::route('/'),
             'create' => Pages\CreateConfirmation::route('/create'),
-            'view' => Pages\ViewConfirmation::route('/{record}'),
-            'edit' => Pages\EditConfirmation::route('/{record}/edit'),
+            // 'view' => Pages\ViewConfirmation::route('/{record}'),
+            // 'edit' => Pages\EditConfirmation::route('/{record}/edit'),
         ];
     }
 }

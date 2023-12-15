@@ -18,6 +18,10 @@ use Filament\Forms\Components\Hidden;
 use Illuminate\Support\Str;
 use Filament\Forms\Set;
 use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\Section;
+use Filament\Tables\Columns\Summarizers\Sum;
+use Filament\Tables\Columns\Summarizers\Range;
+
 
 
 class StockResource extends Resource
@@ -30,9 +34,11 @@ class StockResource extends Resource
     {
         return $form
             ->schema([
+                Section::make() ->schema([
                 Select::make('product_id')->relationship(name: 'product', titleAttribute: 'title')->required(),
                 TextInput::make('qty')->numeric()->required(),
                 TextInput::make('total')->currencyMask(thousandSeparator: '.',decimalSeparator: ',',precision: 2)->required()->columnSpanFull(),
+            ])
             ]);
     }
 
@@ -45,6 +51,7 @@ class StockResource extends Resource
                 Tables\Columns\TextColumn::make('product.unit.symbol'),
                 Tables\Columns\TextColumn::make('created_at')->label('Stock Date'),
                 Tables\Columns\TextColumn::make('total')->formatStateUsing(fn (string $state): string => __(rupiah("{$state}"))),
+                // Tables\Columns\TextColumn::make('total')->summarize(Sum::make())
             ])
             ->filters([
                 Filter::make('created_at')

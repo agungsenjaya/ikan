@@ -16,6 +16,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Hidden;
 use Illuminate\Support\Str;
 use Filament\Forms\Set;
+use Filament\Forms\Components\Section;
 
 class PaymentResource extends Resource
 {
@@ -26,6 +27,7 @@ class PaymentResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
+            Section::make() ->schema([
             TextInput::make('title')->required()
     ->live()
     ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
@@ -33,6 +35,7 @@ class PaymentResource extends Resource
     
 Hidden::make('slug')
                 
+            ])
             ]);
     }
 

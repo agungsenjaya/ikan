@@ -7,6 +7,9 @@ use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\Grid;
+
 use Filament\Forms\Components\Actions\Action;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Actions\CreateAction;
@@ -25,12 +28,18 @@ class ViewInvoice extends ViewRecord
     public function infolist(Infolist $infolist): Infolist
 
     {
-    
-        return $infolist
+    return $infolist
         ->schema([
-            TextEntry::make('code')->columnSpanFull()->label('Invoice Code'),
+            Section::make()
+            ->schema([
+                Grid::make(2)->schema([
+            TextEntry::make('code')->label('Invoice Code'),
             TextEntry::make('product.title'),
-            TextEntry::make('product.category.title')->label('Category'),
+            TextEntry::make('product.category.title')->label('Category')->badge()
+            ->color(fn (string $state): string => match ($state) {
+                'ikan tawar' => 'warning',
+                'ikan laut' => 'success',
+            }),
             TextEntry::make('qty'),
             TextEntry::make('product.unit.symbol')->label('Unit'),
             TextEntry::make('user.name')->label('User'),
@@ -40,8 +49,10 @@ class ViewInvoice extends ViewRecord
                 'paid' => 'success',
                 'reject' => 'danger',
             }),
-            TextEntry::make('created_at')->columnSpanFull()->label('Buy Date'),
-            TextEntry::make('total')->columnSpanFull()->formatStateUsing(fn (string $state): string => __(rupiah("{$state}"))),
+            TextEntry::make('created_at')->label('Buy Date'),
+            TextEntry::make('total')->formatStateUsing(fn (string $state): string => __(rupiah("{$state}"))),
+        ])
+        ])
         ]);
 }
 

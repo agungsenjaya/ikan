@@ -16,4 +16,11 @@ class ListConfirmations extends ListRecords
     //         Actions\CreateAction::make(),
     //     ];
     // }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            ConfirmationResource\Widgets\ConfirmationWidget::class,
+        ];
+    }
 }
