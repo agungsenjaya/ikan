@@ -28,8 +28,8 @@ class UnitResource extends Resource
         return $form->schema([
             TextInput::make('title')
     ->live()
-    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
-    TextInput::make('symbol'),
+    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state)))->required(),
+    TextInput::make('symbol')->required(),
 Hidden::make('slug')
                 
             ]);

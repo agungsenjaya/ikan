@@ -30,9 +30,9 @@ class StockResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('product_id')->relationship(name: 'products', titleAttribute: 'title')->required(),
+                Select::make('product_id')->relationship(name: 'product', titleAttribute: 'title')->required(),
                 TextInput::make('qty')->numeric()->required(),
-                TextInput::make('total')->currencyMask(thousandSeparator: '.',decimalSeparator: ',',precision: 2)->required(),
+                TextInput::make('total')->currencyMask(thousandSeparator: '.',decimalSeparator: ',',precision: 2)->required()->columnSpanFull(),
             ]);
     }
 

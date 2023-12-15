@@ -14,7 +14,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Actions\Action;
 
 
-class LatestProducts extends BaseWidget
+class ZatestProducts extends BaseWidget
 {
     protected int | string | array $columnSpan = 'full';
 

@@ -18,6 +18,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Chiiya\FilamentAccessControl\FilamentAccessControlPlugin;
+use App\Filament\Widgets\ProductWidget;
 
 
 class DashboardPanelProvider extends PanelProvider
@@ -29,7 +30,6 @@ class DashboardPanelProvider extends PanelProvider
             ->id('dashboard')
             ->path('dashboard')
             ->login()
-            // ->plugin(FilamentAccessControlPlugin::make())
             ->plugins([
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
             ])
@@ -61,4 +61,12 @@ class DashboardPanelProvider extends PanelProvider
                 Authenticate::class,
             ]);
     }
+
+    protected function getHeaderWidgets(): array
+{
+    return [
+        ProductWidget::class
+    ];
+}
+    
 }

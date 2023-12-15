@@ -59,9 +59,9 @@ class ViewInvoice extends ViewRecord
         ->form([
             FileUpload::make('img')->required(),
             Hidden::make('invoice_id')->default($this->record->id),
-            TextInput::make('payment_method')->default($this->record->payment->title)->extraInputAttributes(['readonly' => true]),
-            TextInput::make('total')->default($this->record->total)->currencyMask(thousandSeparator: '.',decimalSeparator: ',',precision: 2)->extraInputAttributes(['readonly' => true]),
-        ])
+            TextInput::make('payment_method')->default($this->record->payment->title)->extraInputAttributes(['readonly' => true])->disabled(true),
+            TextInput::make('total')->default($this->record->total)->currencyMask(thousandSeparator: '.',decimalSeparator: ',',precision: 2)->extraInputAttributes(['readonly' => true])->disabled(true),
+        ])->successRedirectUrl(route('filament.dashboard.resources.confirmations.index'))
         ];
         }
         

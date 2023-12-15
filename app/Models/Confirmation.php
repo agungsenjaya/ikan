@@ -9,6 +9,7 @@ class Confirmation extends Model
 {
     use HasFactory;
 
+    // protected $fillable = ['img', 'invoice_id'];
     protected $table = 'confirmations';
     protected $guarded = ['confirmations'];
 

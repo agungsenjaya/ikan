@@ -28,6 +28,7 @@ use Filament\Tables\Columns\ImageColumn;
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
+    protected static ?string $inverseRelationship = 'company';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -35,13 +36,13 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('title')->unique(table: Product::class)->live()
-                ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state)))->required(),
-                Select::make('category_id')->relationship(name: 'categories', titleAttribute: 'title')->required(),
+                // TextInput::make('title')->unique(table: Product::class)->live()->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state)))->required(),
+                TextInput::make('title')->live()->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state)))->required(),
+                Select::make('category_id')->relationship(name: 'category', titleAttribute: 'title')->required()->preload(),
                 TextInput::make('price')->currencyMask(thousandSeparator: '.',decimalSeparator: ',',precision: 2)->required(),
-                Select::make('unit_id')->relationship(name: 'units', titleAttribute: 'title')->required(),
-                Textarea::make('description')->required(),
-                FileUpload::make('img')->required(),    
+                Select::make('unit_id')->relationship(name: 'unit', titleAttribute: 'title')->required()->preload(),
+                Textarea::make('description')->required()->columnSpanFull(),
+                FileUpload::make('img')->required()->columnSpanFull(),    
                 Hidden::make('slug')
             ]);
     }
@@ -104,7 +105,6 @@ class ProductResource extends Resource
             'create' => Pages\CreateProduct::route('/create'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
             'buy' => Pages\BuyProduct::route('/{record}/buy'),
-            // 'buy' => Pages\EditProduct::route('/{record}/buy'),
         ];
     }
 }
