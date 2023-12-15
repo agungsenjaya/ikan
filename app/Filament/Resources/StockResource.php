@@ -42,7 +42,9 @@ class StockResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('product.title')->searchable(),
                 Tables\Columns\TextColumn::make('qty'),
-                Tables\Columns\TextColumn::make('total')->money('IDR'),
+                Tables\Columns\TextColumn::make('product.unit.symbol'),
+                Tables\Columns\TextColumn::make('created_at')->label('Stock Date'),
+                Tables\Columns\TextColumn::make('total')->formatStateUsing(fn (string $state): string => __(rupiah("{$state}"))),
             ])
             ->filters([
                 Filter::make('created_at')

@@ -21,6 +21,7 @@ use Filament\Forms\Components\MorphToSelect;
 use Filament\Forms\Set;
 use Illuminate\Support\Str;
 use Filament\Tables\Columns\Summarizers\Sum;
+use Filament\Tables\Columns\ImageColumn;
 
 
 
@@ -49,20 +50,32 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
+                ImageColumn::make('img'),
                 Tables\Columns\TextColumn::make('title')->searchable(),
-                Tables\Columns\TextColumn::make('category.title'),
+                Tables\Columns\TextColumn::make('category.title')->badge()
+                ->color(fn (string $state): string => match ($state) {
+                    'ikan tawar' => 'warning',
+                    'ikan laut' => 'success',
+                }),
                 Tables\Columns\TextColumn::make('unit.symbol'),
                 Tables\Columns\TextColumn::make('stock')->state(function ($record){
                     $a = 0;
-                    $b = $record->stocks;
-                    if ($b) {
-                        foreach ($b as $req) {
-                            $a += $req->qty;
-                        };
-                    }
-                    return $a;
+                $b = $record->stocks;
+                if ($b) {
+                    foreach ($b as $req) {
+                        $a += $req->qty;
+                    };
+                }
+                $c = 0;
+                $d = $record->invoices;
+                if ($d) {
+                    foreach ($d as $req) {
+                        $c += $req->qty;
+                    };
+                }
+                return $a - $c;
                 }),
-                Tables\Columns\TextColumn::make('price')->money('IDR'),
+                Tables\Columns\TextColumn::make('price')->formatStateUsing(fn (string $state): string => __(rupiah("{$state}"))),
             ])
             ->filters([
                 //
@@ -90,6 +103,8 @@ class ProductResource extends Resource
             'index' => Pages\ListProducts::route('/'),
             'create' => Pages\CreateProduct::route('/create'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
+            'buy' => Pages\BuyProduct::route('/{record}/buy'),
+            // 'buy' => Pages\EditProduct::route('/{record}/buy'),
         ];
     }
 }

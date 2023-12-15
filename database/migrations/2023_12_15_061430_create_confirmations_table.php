@@ -11,15 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('invoices', function (Blueprint $table) {
+        Schema::create('confirmations', function (Blueprint $table) {
             $table->id();
-            $table->longText('code');
-            $table->enum('status',['unpaid','paid','reject']);
-            $table->bigInteger('user_id');
-            $table->bigInteger('product_id');
-            $table->bigInteger('payment_id');
-            $table->bigInteger('qty');
-            $table->bigInteger('total');
+            $table->bigInteger('invoice_id');
+            $table->longText('img');
             $table->timestamps();
         });
     }
@@ -29,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('invoices');
+        Schema::dropIfExists('confirmations');
     }
 };

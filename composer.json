@@ -10,7 +10,7 @@
     "require": {
         "php": "^8.1",
         "ariaieboy/filament-currency": "^1.2",
-        "chiiya/filament-access-control": "^2.3",
+        "bezhansalleh/filament-shield": "^3.0",
         "filament/filament": "^3.0-stable",
         "filament/forms": "^3.0-stable",
         "guzzlehttp/guzzle": "^7.2",
@@ -32,7 +32,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/Helpers/helper.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

@@ -29,7 +29,10 @@ class DashboardPanelProvider extends PanelProvider
             ->id('dashboard')
             ->path('dashboard')
             ->login()
-            ->plugin(FilamentAccessControlPlugin::make())
+            // ->plugin(FilamentAccessControlPlugin::make())
+            ->plugins([
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
+            ])
             ->colors([
                 'primary' => Color::Amber,
             ])

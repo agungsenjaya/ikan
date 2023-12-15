@@ -12,15 +12,6 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\MorphToSelect;
-use Filament\Forms\Set;
-use Illuminate\Support\Str;
-use Filament\Tables\Columns\Summarizers\Sum;
 
 class InvoiceResource extends Resource
 {
@@ -32,12 +23,7 @@ class InvoiceResource extends Resource
     {
         return $form
             ->schema([
-                Hidden::make('code')->default('INV-' . strtoupper(Str::random(5))),
-                Hidden::make('user_id')->default(auth()->id()),
-                Select::make('product_id')->relationship(name: 'products', titleAttribute: 'title')->required(),
-                TextInput::make('qty')->numeric()->required(),
-                Select::make('payment_id')->relationship(name: 'payments', titleAttribute: 'title')->required(),
-                TextInput::make('total')->extraInputAttributes(['readonly' => true])->label('Total Invoice')->required(),
+                //
             ]);
     }
 
@@ -45,26 +31,31 @@ class InvoiceResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('code')->label('Invoice Code')->searchable(),
+                Tables\Columns\TextColumn::make('product.title')->searchable(),
+                Tables\Columns\TextColumn::make('status')->badge()
+                ->color(fn (string $state): string => match ($state) {
+                    'unpaid' => 'warning',
+                    'paid' => 'success',
+                    'reject' => 'danger',
+                }),
+                Tables\Columns\TextColumn::make('created_at')->label('Buy Date'),
+                Tables\Columns\TextColumn::make('qty')->label('Qty'),
+                Tables\Columns\TextColumn::make('product.unit.symbol')->label('Unit'),
+                Tables\Columns\TextColumn::make('total')->formatStateUsing(fn (string $state): string => __(rupiah("{$state}"))),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
@@ -72,6 +63,7 @@ class InvoiceResource extends Resource
         return [
             'index' => Pages\ListInvoices::route('/'),
             'create' => Pages\CreateInvoice::route('/create'),
+            'view' => Pages\ViewInvoice::route('/{record}'),
             'edit' => Pages\EditInvoice::route('/{record}/edit'),
         ];
     }

@@ -27,4 +27,20 @@ class Invoice extends Model
     public function Payment(){
         return $this->belongsTo('App\Models\Payment');
     }
+
+    public function Users(){
+        return $this->hasMany('App\Models\User');
+    }
+    
+    public function User(){
+        return $this->belongsTo('App\Models\User');
+    }
+    
+    public function Confirmations(){
+        return $this->hasMany('App\Models\Confirmation');
+    }
+    
+    public function Confirmation(){
+        return $this->belongsTo('App\Models\Confirmation');
+    }
 }
